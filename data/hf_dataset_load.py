@@ -11,30 +11,14 @@ else:
 
 dataset = load_dataset("Falah/arxiv-research-paper")
 
-print(dataset)
-
+# all-distilroberta-v1 is a pre-trained model from sentence-transformers
+# It has slightly better performance than the default model in chromaDB - all-MiniLM-L6-v2
 embed_generator = EmbeddingsGenerator('all-distilroberta-v1')
 
-def prepareDataOneSample(example):
-    metadata = {
-        "id": example['id'],
-        "title": example['title'],
-        "license": example['license'] if example['license'] else "N/A",
-        "categories": example['categories'],
-        "authors": json.dumps(example['authors_parsed']),
-        "last_updated": example["versions"][-1]["created"]
-    }
-    abstract = example['abstract']
+print(dataset)
 
-    # return metadata, abstract, example['id']
-    return {
-        "metadata" :metadata, 
-        "abstract" :abstract, 
-        "id" :example['id']
-        }
 
 def prepareData(batch):
-    # print(batch, "\n\n\n")
     
     ids = batch['id']
     titles = batch['title']
@@ -43,8 +27,9 @@ def prepareData(batch):
     authors = [json.dumps(per_article_author) for per_article_author in batch['authors_parsed']]
     
     last_updated = [per_article[-1]["created"] for per_article in batch["versions"]]
-    # last_updated = [print(per_article) for per_article in batch]
     
+    # Primary reason to run batched_processing
+    # This is faster than running the embeddings for each abstract one by one - GPU parallelism
     embeddings = embed_generator.get_embeddings(batch['abstract'])
     
     return {
@@ -82,6 +67,5 @@ metadatas = [
 coll.add(
     documents=batch_out['abstract'],
     metadatas=metadatas,
-    ids=batch_out['id'],
-    # show
+    ids=batch_out['id']
 )
