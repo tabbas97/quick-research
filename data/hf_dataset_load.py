@@ -4,10 +4,7 @@ import json
 from local_chroma_connection import LocalChromaConnection
 from embeddings import EmbeddingsGenerator
 
-if not LocalChromaConnection.get_collection('arxiv-research-paper'):
-    coll = LocalChromaConnection.create_collection('arxiv-research-paper')
-else:
-    coll = LocalChromaConnection.get_collection('arxiv-research-paper')
+coll = LocalChromaConnection.create_collection('arxiv-research-paper', get_or_create = True)
 
 dataset = load_dataset("Falah/arxiv-research-paper")
 
@@ -16,7 +13,6 @@ dataset = load_dataset("Falah/arxiv-research-paper")
 embed_generator = EmbeddingsGenerator('all-distilroberta-v1')
 
 print(dataset)
-
 
 def prepareData(batch):
     
@@ -66,6 +62,7 @@ metadatas = [
 
 coll.add(
     documents=batch_out['abstract'],
+    embeddings=batch_out['embeddings'],
     metadatas=metadatas,
     ids=batch_out['id']
 )

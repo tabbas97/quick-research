@@ -2,3 +2,6 @@ venv/
 trials/
 chroma_data/
 chroma.log
+cache/
+__pycache__/
+pdfs/
