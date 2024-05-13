@@ -9,7 +9,6 @@ searcher = chroma_wrapper.ChromaSearchWrapper('arxiv-research-paper')
 
 def format_authors(authors):
     authors = json.loads(authors)
-    print(authors)
     out = ",".join([" ".join(author) for author in authors])
     return out
 
@@ -21,8 +20,6 @@ def run_search():
     query_results = searcher.run_query(query)
     reranked_results = searcher.rerank_queries(query, query_results)
     for result in reranked_results:
-        print(result.keys())
-        print(result['meta'].keys())
         with res_container.expander(result['meta']['title']):
             text_tab, meta_tab = st.tabs(["Abstract", "Metadata"])
             with meta_tab:
@@ -34,7 +31,7 @@ def run_search():
             with text_tab:
                 st.write(result['text'])
                 
-    st.session_state["results"] = res_container        
+    st.session_state["results"] = res_container
     
 
 st.title('QuickResearch')
@@ -47,7 +44,7 @@ st.session_state.query = user_input
 
 st.button(
     'Search',
-    on_click=run_search
+    on_click = run_search
     )
 
 st.text('Results will appear below:')
