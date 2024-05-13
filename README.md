@@ -16,7 +16,7 @@ Quickly find the most relevant papers to any topic that you are looking to work 
 
 ## In Progress
 
-1. Keyword based discovery - Knowldege graph based search
+1. Keyword based discovery & Knowldege graph based search
 
 ## Planned Features
 
